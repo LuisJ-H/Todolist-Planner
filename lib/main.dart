@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:todolist_app/pages/login.dart';
 // import 'firebase_options.dart';
 
 void main() {
@@ -16,12 +17,19 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
+      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Login(),
+      // home: const Scaffold(
+      //   body: Center(
+      //     child: Text('Hello World!'),
+      //   ),
+      // ),
     );
   }
 }
