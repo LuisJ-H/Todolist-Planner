@@ -17,20 +17,6 @@ class Login extends StatelessWidget{
             ]
           ),
         ),
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 80,),
-            Expanded(child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
-                )
-              ),
-            ))
-          ],
-        ),
       )
     );
   }
