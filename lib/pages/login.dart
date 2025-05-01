@@ -136,39 +136,21 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.blue,
-              Colors.purple,
-            ]),
-      ),
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 80,
-          ),
-<<<<<<< HEAD
-        ),
-      )
-    );
-=======
+      body: Column(
+        children: [
           Expanded(
-              child: Container(
+          child: Container(
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
-                )),
-          ))
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(60),
+                topRight: Radius.circular(60),
+              )
+            ),
+          ),
+          ),
         ],
       ),
-    ));
->>>>>>> 7a2c030134726df111cd2e7c50c2438ea516d499
+    );
   }
 }
