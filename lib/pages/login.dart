@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'signup.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
   const LoginScreen({super.key});
 
   @override
@@ -98,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SignUpScreen()),
                         builder: (context) => const SignUpScreen(),
                       ),
                     );
