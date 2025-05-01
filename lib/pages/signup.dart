@@ -114,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   ButtonStyle _buttonStyle() {
     return ElevatedButton.styleFrom(
       backgroundColor: Colors.white,
-      foregroundColor: Colors.blueAccent,
+      foregroundColor: Colors.blueAccent, //Button colors
       padding: const EdgeInsets.symmetric(vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
