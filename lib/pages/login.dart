@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'signup.dart';
 
-class Login extends StatelessWidget{
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -137,10 +136,6 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
         body: Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -150,7 +145,6 @@ class Login extends StatelessWidget {
             colors: [
               Colors.blue,
               Colors.purple,
-            ]
             ]),
       ),
       child: Column(
@@ -177,5 +171,4 @@ class Login extends StatelessWidget {
     ));
 >>>>>>> 7a2c030134726df111cd2e7c50c2438ea516d499
   }
-}}
 }
