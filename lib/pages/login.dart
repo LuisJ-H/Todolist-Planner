@@ -14,7 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
@@ -76,16 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       : 'Min 6 characters',
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: _inputDecoration('Confirm Password').copyWith(
-                    prefixIcon: const Icon(Icons.lock_outline),
-                  ),
-                  validator: (value) => value == passwordController.text
-                      ? null
-                      : 'Passwords do not match',
-                ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _submit,

@@ -13,6 +13,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
@@ -63,6 +64,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ? null
                       : 'Min 6 characters',
                 ),
+                TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: _inputDecoration('Confirm Password').copyWith(
+                    prefixIcon: const Icon(Icons.lock_outline),
+                  ),
+                  validator: (value) => value == passwordController.text
+                      ? null
+                      : 'Passwords do not match',
+                ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _submit,
@@ -74,7 +85,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
+                        builder: (context) => const LoginScreen(),
+                      ),
                     );
                   },
                   child: const Text(
