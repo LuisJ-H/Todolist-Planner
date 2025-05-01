@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'signup.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -133,6 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class Login extends StatelessWidget {
+  const Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
