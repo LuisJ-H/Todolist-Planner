@@ -4,6 +4,7 @@ import 'signup.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -98,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => const SignUpScreen()),
+                        builder: (context) => const SignUpScreen(),
+                      ),
                     );
                   },
                   child: const Text(
@@ -133,11 +136,32 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class Login extends StatelessWidget {
+  const Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
       body: Column(
         children: [
+=======
+        body: Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.blue,
+              Colors.purple,
+            ]),
+      ),
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 80,
+          ),
+>>>>>>> d9217ff37d1c4c6d2a778611e89d6f1ac211d36a
           Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -151,6 +175,10 @@ class Login extends StatelessWidget {
           ),
         ],
       ),
+<<<<<<< HEAD
     );
+=======
+    ));
+>>>>>>> d9217ff37d1c4c6d2a778611e89d6f1ac211d36a
   }
 }

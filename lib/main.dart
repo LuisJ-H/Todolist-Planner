@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'package:todolist_app/pages/login.dart';
 import 'package:todolist_app/pages/projects.dart';
 import 'package:todolist_app/pages/signup.dart';
@@ -12,6 +14,11 @@ void main() {
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
+Future<void> main() async {
+  // initialize Firebase:
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const MainApp());
 }
@@ -25,6 +32,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TodoList App',
       home: const WelcomeScreen(),
+      home: const LoginScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
