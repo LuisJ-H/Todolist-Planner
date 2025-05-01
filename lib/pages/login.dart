@@ -154,6 +154,11 @@ class Login extends StatelessWidget {
           SizedBox(
             height: 80,
           ),
+<<<<<<< HEAD
+        ),
+      )
+    );
+=======
           Expanded(
               child: Container(
             decoration: BoxDecoration(
@@ -166,5 +171,6 @@ class Login extends StatelessWidget {
         ],
       ),
     ));
+>>>>>>> 7a2c030134726df111cd2e7c50c2438ea516d499
   }
 }
