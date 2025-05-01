@@ -22,17 +22,6 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: Login(),
-      // home: const Scaffold(
-      //   body: Center(
-      //     child: Text('Hello World!'),
-      //   ),
-      // ),
       debugShowCheckedModeBanner: false,
       title: 'TodoList App',
       home: const WelcomeScreen(),
