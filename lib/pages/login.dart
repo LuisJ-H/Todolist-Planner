@@ -10,6 +10,10 @@ class LoginScreen extends StatefulWidget {
       );
   const LoginScreen({super.key});
 
+
+  /*TODO
+  *  Fix isLoading
+  */
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -77,15 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                TextFormField(
-                  controller: nameController,
-                  decoration: _inputDecoration('Name').copyWith(
-                    prefixIcon: const Icon(Icons.person),
-                  ),
-                  validator: (value) => value != null && value.isNotEmpty
-                      ? null
-                      : 'Enter your name',
-                ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: emailController,
