@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 
   /*TODO
-  *  Fix isLoading
+  *
   */
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -151,88 +151,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-<<<<<<< Updated upstream
-// class Login extends StatelessWidget {
-//   const Login({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Column(
-//         children: [
-//           body: Container(
-//             width: double.infinity,
-//             decoration: const BoxDecoration(
-//               gradient: LinearGradient(
-//                 begin: Alignment.topLeft,
-//                 end: Alignment.bottomRight,
-//                 colors: [
-//                   Colors.blue,
-//                   Colors.purple,
-//                 ]
-//               ),
-//             )
-//           ),
-//           child: Column(
-//             children: <Widget>[
-//               SizedBox(
-//                 height: 80,
-//               ),
-//               Expanded(
-//               child: Container(
-//                 decoration: BoxDecoration(
-//                   color: Colors.white,
-//                   borderRadius: BorderRadius.only(
-//                     topLeft: Radius.circular(60),
-//                     topRight: Radius.circular(60),
-//                   )
-//                 ),
-//               ),
-//               ),
-//             ],
-//           ),
-//         ]
-//       )
-//     );
-//   }
-// }
-=======
-class Login extends StatelessWidget {
-  const Login({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.blue, Colors.purple],
-              ),
-            ),
-            child: const SizedBox(
-              height: 80,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
-                ),
-              ),
-            ),
-          ),
-        ]
-      )
-    );
-  }
-}
->>>>>>> Stashed changes
