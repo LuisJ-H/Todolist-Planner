@@ -27,7 +27,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-      print("User signed up: ${userCredential.user?.email}");
+
+      String uid = userCredential.user!.uid;
+      await FirebaseFireStore.instance.collection('users').doc(uid).set(){
+        'email' : emailController,
+        'createdAt' :
+      }
     } on FirebaseAuthException catch (e) {
       print("Firebase sign up error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
