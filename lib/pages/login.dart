@@ -133,50 +133,47 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-class Login extends StatelessWidget {
-  const Login({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-<<<<<<< HEAD
-      body: Column(
-        children: [
-=======
-        body: Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.blue,
-              Colors.purple,
-            ]),
-      ),
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 80,
-          ),
->>>>>>> d9217ff37d1c4c6d2a778611e89d6f1ac211d36a
-          Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(60),
-                topRight: Radius.circular(60),
-              )
-            ),
-          ),
-          ),
-        ],
-      ),
-<<<<<<< HEAD
-    );
-=======
-    ));
->>>>>>> d9217ff37d1c4c6d2a778611e89d6f1ac211d36a
-  }
-}
+// class Login extends StatelessWidget {
+//   const Login({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Column(
+//         children: [
+//           body: Container(
+//             width: double.infinity,
+//             decoration: const BoxDecoration(
+//               gradient: LinearGradient(
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.bottomRight,
+//                 colors: [
+//                   Colors.blue,
+//                   Colors.purple,
+//                 ]
+//               ),
+//             )
+//           ),
+//           child: Column(
+//             children: <Widget>[
+//               SizedBox(
+//                 height: 80,
+//               ),
+//               Expanded(
+//               child: Container(
+//                 decoration: BoxDecoration(
+//                   color: Colors.white,
+//                   borderRadius: BorderRadius.only(
+//                     topLeft: Radius.circular(60),
+//                     topRight: Radius.circular(60),
+//                   )
+//                 ),
+//               ),
+//               ),
+//             ],
+//           ),
+//         ]
+//       )
+//     );
+//   }
+// }
