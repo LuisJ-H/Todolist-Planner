@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todolist_app/pages/projects.dart';
 import 'signup.dart';
 
 class LoginScreen extends StatefulWidget {
+  static route() => MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      );
   const LoginScreen({super.key});
 
+
+  /*TODO
+  *  Fix isLoading
+  */
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -14,12 +23,39 @@ class _LoginScreenState extends State<LoginScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  bool isLoading = false;
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/sonic');
+  Future<void> loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (userCredential.user != null) {
+        print("Login Successful. Redirecting......");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Projects()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      print("FireBase login error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Login Failed. Please try again later.'),
+        ),
+      );
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -45,15 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                TextFormField(
-                  controller: nameController,
-                  decoration: _inputDecoration('Name').copyWith(
-                    prefixIcon: const Icon(Icons.person),
-                  ),
-                  validator: (value) => value != null && value.isNotEmpty
-                      ? null
-                      : 'Enter your name',
-                ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: emailController,
@@ -76,22 +103,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       : 'Min 6 characters',
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: _inputDecoration('Confirm Password').copyWith(
-                    prefixIcon: const Icon(Icons.lock_outline),
-                  ),
-                  validator: (value) => value == passwordController.text
-                      ? null
-                      : 'Passwords do not match',
-                ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _submit,
-                  style: _buttonStyle(),
-                  child: const Text('Log In'),
-                ),
+                isLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: loginUser,
+                        style: _buttonStyle(),
+                        child: const Text('Log In'),
+                      ),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(

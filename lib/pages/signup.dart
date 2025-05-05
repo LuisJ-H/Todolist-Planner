@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static route() => MaterialPageRoute(
+        builder: (context) => const SignUpScreen(),
+      );
   const SignUpScreen({super.key});
 
   @override
@@ -13,10 +17,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  bool isLoading = false;
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/login');
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      print("User signed up: ${userCredential.user?.email}");
+    } on FirebaseAuthException catch (e) {
+      print("Firebase sign up error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? "Sign up failed. Please try again later."),
+        ),
+      );
     }
   }
 
@@ -63,9 +81,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ? null
                       : 'Min 6 characters',
                 ),
+                TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: _inputDecoration('Confirm Password').copyWith(
+                    prefixIcon: const Icon(Icons.lock_outline),
+                  ),
+                  validator: (value) => value == passwordController.text
+                      ? null
+                      : 'Passwords do not match',
+                ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await createUserWithEmailAndPassword();
+                      Navigator.pushReplacement(context, LoginScreen.route());
+                    }
+                  },
                   style: _buttonStyle(),
                   child: const Text('Sign Up'),
                 ),
@@ -74,7 +107,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
+                        builder: (context) => const LoginScreen(),
+                      ),
                     );
                   },
                   child: const Text(
@@ -102,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   ButtonStyle _buttonStyle() {
     return ElevatedButton.styleFrom(
       backgroundColor: Colors.white,
-      foregroundColor: Colors.blueAccent,
+      foregroundColor: Colors.blueAccent, //Button colors
       padding: const EdgeInsets.symmetric(vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
