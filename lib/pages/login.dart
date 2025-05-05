@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool isLoading = true;
+  bool isLoading = false;
 
   Future<void> loginUser() async {
     setState(() {
