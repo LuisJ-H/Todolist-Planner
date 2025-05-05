@@ -9,6 +9,7 @@ import 'package:todolist_app/pages/welcome.dart';
 import 'package:todolist_app/pages/task.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // initialize Firebase:
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
