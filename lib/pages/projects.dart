@@ -139,8 +139,22 @@ class _ProjectsState extends State<Projects> {
         onPressed: _showAddProjectDialog,
         child: const Icon(Icons.add),
       ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: [
+      //         ListTile(
+      //           title: Text('Logout'),
+      //           trailing: Icon(Icons.logout),
+      //           onTap: (){
+      //
+      //           },
+      //         ),
+      //     ],
+      //   ),
+      // ),
       body: projects.isEmpty
-          ? const Center(child: Text('No projects yet. Tap + to add one.'))
+          ? const Center(child: Text('No projects yet. Tap + to add one.', style: TextStyle(fontSize: 20),))
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: projects.length,
@@ -169,21 +183,16 @@ class _ProjectsState extends State<Projects> {
               ),
               child: const Icon(Icons.delete, color: Colors.white, size: 30),
             ),
-            onDismissed: (_) async {
-              final shouldDelete = await _showConfirmationDialog(context, project.name);
-
-              if (shouldDelete) {
-                setState(() {
-                  project.isDeleted = true;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${project.name} marked as deleted')),
-                );
-              } else {
-                setState(() {
-                  project.isDeleted = false;
-                });
-              }
+            confirmDismiss: (_) async {
+              return await _showConfirmationDialog(context, project.name);
+            },
+            onDismissed: (_) {
+              setState(() {
+                projects.remove(project);
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('${project.name} marked as deleted')),
+              );
             },
             child: project.isDeleted
                 ? SizedBox()
