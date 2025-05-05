@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todolist_app/pages/projects.dart';
 import 'signup.dart';
 
 class LoginScreen extends StatefulWidget {
+  static route() => MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      );
   const LoginScreen({super.key});
 
   @override
@@ -14,11 +19,39 @@ class _LoginScreenState extends State<LoginScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isLoading = true;
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/sonic');
+  Future<void> loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (userCredential.user != null) {
+        print("Login Successful. Redirecting......");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Projects()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      print("FireBase login error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Login Failed. Please try again later.'),
+        ),
+      );
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -76,11 +109,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _submit,
-                  style: _buttonStyle(),
-                  child: const Text('Log In'),
-                ),
+                isLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: loginUser,
+                        style: _buttonStyle(),
+                        child: const Text('Log In'),
+                      ),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(

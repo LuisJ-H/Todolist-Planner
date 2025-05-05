@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static route() => MaterialPageRoute(
+        builder: (context) => const SignUpScreen(),
+      );
   const SignUpScreen({super.key});
 
   @override
@@ -14,10 +18,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool isLoading = false;
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/login');
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      print("User signed up: ${userCredential.user?.email}");
+    } on FirebaseAuthException catch (e) {
+      print("Firebase sign up error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? "Sign up failed. Please try again later."),
+        ),
+      );
     }
   }
 
@@ -76,7 +93,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await createUserWithEmailAndPassword();
+                      Navigator.pushReplacement(context, LoginScreen.route());
+                    }
+                  },
                   style: _buttonStyle(),
                   child: const Text('Sign Up'),
                 ),
