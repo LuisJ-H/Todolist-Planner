@@ -1,0 +1,2 @@
+C:/Users/luisj/CSET_270/todolist_app/android/app/.cxx/RelWithDebInfo/6d426n2o/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/luisj/CSET_270/todolist_app/android/app/.cxx/RelWithDebInfo/6d426n2o/armeabi-v7a/CMakeFiles/rebuild_cache.dir

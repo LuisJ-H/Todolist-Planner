@@ -1,0 +1,1 @@
+C:\Users\luisj\CSET_270\todolist_app\build\app\intermediates\cxx\RelWithDebInfo\6d426n2o\obj\armeabi-v7a
