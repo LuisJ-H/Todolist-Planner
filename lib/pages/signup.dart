@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
 
@@ -29,10 +30,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       String uid = userCredential.user!.uid;
-      await FirebaseFireStore.instance.collection('users').doc(uid).set(){
-        'email' : emailController,
-        'createdAt' :
-      }
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'email' : emailController,
+          'createdAt' : Timestamp.now(),
+      });
     } on FirebaseAuthException catch (e) {
       print("Firebase sign up error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
