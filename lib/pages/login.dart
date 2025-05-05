@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todolist_app/pages/loadingPage.dart';
 import 'package:todolist_app/pages/projects.dart';
 import 'signup.dart';
 
@@ -12,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 
   /*TODO
-  *  Fix isLoading
+  *
   */
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -59,8 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => isLoading ? const LoadingPage() :
+    Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 132, 255),
       body: SafeArea(
         child: Padding(
@@ -104,13 +105,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 const SizedBox(height: 24),
-                isLoading
-                    ? const CircularProgressIndicator(color: Colors.blueAccent,)
-                    : ElevatedButton(
-                        onPressed: loginUser,
-                        style: _buttonStyle(),
-                        child: const Text('Log In'),
-                      ),
+                ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+
+                      await loginUser();
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                    style: _buttonStyle(),
+                    child: const Text('Log In'),
+                ),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(
@@ -150,41 +158,4 @@ class _LoginScreenState extends State<LoginScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
-}
 
-class Login extends StatelessWidget {
-  const Login({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.blue,
-              Colors.purple,
-            ]),
-      ),
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 80,
-          ),
-          Expanded(
-              child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
-                )),
-          ))
-        ],
-      ),
-    ));
-  }
-}

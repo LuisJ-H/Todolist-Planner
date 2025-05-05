@@ -26,7 +26,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TodoList App',
-      home: const LoginScreen(),
+      home: const WelcomeScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
