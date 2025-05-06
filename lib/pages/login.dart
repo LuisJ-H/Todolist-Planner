@@ -93,9 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: _inputDecoration('Email').copyWith(
                         prefixIcon: const Icon(Icons.email),
                       ),
-                      validator: (value) => value != null && value.contains('@')
+                      validator: (value) => value != null && value.length >= 6
                           ? null
-                          : 'Enter valid email',
+                          : 'Enter a valid email',
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -115,8 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
                           isLoading = true;
                         });
-
-                        await loginUser();
+                        if (_formKey.currentState!.validate()) {
+                          await loginUser();
+                        }
                         setState(() {
                           isLoading = false;
                         });

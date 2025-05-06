@@ -31,8 +31,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       String uid = userCredential.user!.uid;
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
-          'email' : emailController,
-          'createdAt' : Timestamp.now(),
+        'email': emailController,
+        'createdAt': Timestamp.now(),
       });
     } on FirebaseAuthException catch (e) {
       print("Firebase sign up error: $e");
@@ -142,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   ButtonStyle _buttonStyle() {
     return ElevatedButton.styleFrom(
       backgroundColor: Colors.white,
-      foregroundColor: Colors.blueAccent, //Button colors
+      foregroundColor: Colors.blueAccent,
       padding: const EdgeInsets.symmetric(vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );

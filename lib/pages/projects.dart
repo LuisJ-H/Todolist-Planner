@@ -188,73 +188,87 @@ class _ProjectsState extends State<Projects> {
             itemCount: projects.length,
             itemBuilder: (context, index) {
               final project = projects[index];
+              final projectId = project.id;
               final projectName = project['projectName'];
               final projectColor = Color(project['color']);
-              final textColor =
-                  ThemeData.estimateBrightnessForColor(projectColor) ==
-                          Brightness.dark
-                      ? Colors.white
-                      : Colors.black;
 
-              return Dismissible(
-                key: Key(project.id),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        offset: Offset(0, 4),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child:
-                      const Icon(Icons.delete, color: Colors.white, size: 30),
-                ),
-                confirmDismiss: (_) async {
-                  return await _showConfirmationDialog(context, projectName);
-                },
-                onDismissed: (_) async {
-                  await project.reference.delete();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('$projectName has been deleted.')),
-                  );
-                },
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  color: projectColor,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: ListTile(
-                    title: Text(
-                      projectName,
-                      style: TextStyle(fontSize: 20, color: textColor),
-                    ),
-                    subtitle: Text(
-                      "ds",
-                      style: TextStyle(color: textColor.withOpacity(0.7)),
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-                    onTap: () {
-                      final uid = FirebaseAuth.instance.currentUser!.uid;
-                      final projectId = project.id;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Task(
-                            projectId: projectId,
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .collection('projects')
+                    .doc(projectId)
+                    .collection('tasks')
+                    .snapshots(),
+                builder: (context, taskSnapshot) {
+                  final taskCount =
+                      taskSnapshot.hasData ? taskSnapshot.data!.docs.length : 0;
+
+                  final textColor =
+                      ThemeData.estimateBrightnessForColor(projectColor) ==
+                              Brightness.dark
+                          ? Colors.white
+                          : Colors.black;
+
+                  return Dismissible(
+                    key: Key(project.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0, 4),
+                            blurRadius: 8,
                           ),
-                        ),
+                        ],
+                      ),
+                      child: const Icon(Icons.delete,
+                          color: Colors.white, size: 30),
+                    ),
+                    confirmDismiss: (_) async {
+                      return await _showConfirmationDialog(
+                          context, projectName);
+                    },
+                    onDismissed: (_) async {
+                      await project.reference.delete();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('$projectName has been deleted.')),
                       );
                     },
-                  ),
-                ),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      color: projectColor,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      child: ListTile(
+                        title: Text(
+                          projectName,
+                          style: TextStyle(fontSize: 20, color: textColor),
+                        ),
+                        subtitle: Text(
+                          "$taskCount ${taskCount == 1 ? 'task' : 'tasks'}",
+                          style: TextStyle(color: textColor.withOpacity(0.7)),
+                        ),
+                        trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Task(projectId: projectId),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );
