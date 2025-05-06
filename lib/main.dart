@@ -6,11 +6,9 @@ import 'package:todolist_app/pages/login.dart';
 import 'package:todolist_app/pages/projects.dart';
 import 'package:todolist_app/pages/signup.dart';
 import 'package:todolist_app/pages/welcome.dart';
-import 'package:todolist_app/pages/task.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // initialize Firebase:
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -26,15 +24,13 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TodoList App',
-      home: const WelcomeScreen(),
+      initialRoute: '/home',
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
         '/home': (context) => const WelcomeScreen(),
         '/project': (context) => const Projects(),
-        '/task': (context) => const Task(),
       },
-      initialRoute: '/home',
     );
   }
 }

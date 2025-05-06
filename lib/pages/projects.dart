@@ -244,11 +244,10 @@ class _ProjectsState extends State<Projects> {
                     onTap: () {
                       final uid = FirebaseAuth.instance.currentUser!.uid;
                       final projectId = project.id;
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => Task(
-                            uid: uid,
                             projectId: projectId,
                           ),
                         ),
