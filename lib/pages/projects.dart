@@ -1,4 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todolist_app/pages/welcome.dart';
 
 class Project {
   final String name;
@@ -94,8 +98,9 @@ class _ProjectsState extends State<Projects> {
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final name = _projectController.text.trim();
+                  final uid = FirebaseAuth.instance.currentUser!.uid;
                   if (name.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -103,6 +108,12 @@ class _ProjectsState extends State<Projects> {
                       ),
                     );
                     return;
+                  } else {
+                    await FirebaseFirestore.instance.collection('users').doc(uid).collection('projects').add({
+                      'projectName' : name,
+                      'color' : blueColors,
+                      'createdAt' : Timestamp.now(),
+                    });
                   }
 
                   setState(() {
@@ -110,7 +121,7 @@ class _ProjectsState extends State<Projects> {
                   });
 
                   _projectController.clear();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();s
                 },
                 child: const Text('Add'),
               ),
@@ -136,8 +147,14 @@ class _ProjectsState extends State<Projects> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-              icon: const Icon(Icons.logout, color: Colors.black,),
-              onPressed: () {}
+              icon: const Icon(Icons.logout, color: Colors.redAccent,),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                      (route) => false,
+                );
+              }
           )
         ],
       ),
@@ -147,7 +164,7 @@ class _ProjectsState extends State<Projects> {
       ),
 
       body: projects.isEmpty
-          ? const Center(child: Text('No projects yet. Tap + to add one.', style: TextStyle(fontSize: 20),))
+          ? const Center(child: Text('Tap + to add a new project.', style: TextStyle(fontSize: 20),))
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: projects.length,
