@@ -1,4 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todolist_app/pages/welcome.dart';
+import 'package:todolist_app/pages/task.dart';
 
 class Project {
   final String name;
@@ -22,7 +27,6 @@ class Projects extends StatefulWidget {
 }
 
 class _ProjectsState extends State<Projects> {
-  final List<Project> projects = [];
   final TextEditingController _projectController = TextEditingController();
 
   final List<Color> blueColors = [
@@ -37,7 +41,7 @@ class _ProjectsState extends State<Projects> {
 
   void _showAddProjectDialog() {
     _projectController.clear();
-    selectedColor = blueColors[0];
+    selectedColor = blueColors.isNotEmpty ? blueColors[0] : Colors.blue;
 
     showDialog(
       context: context,
@@ -94,8 +98,10 @@ class _ProjectsState extends State<Projects> {
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final name = _projectController.text.trim();
+                  final uid = FirebaseAuth.instance.currentUser!.uid;
+
                   if (name.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -105,12 +111,24 @@ class _ProjectsState extends State<Projects> {
                     return;
                   }
 
-                  setState(() {
-                    projects.add(Project(name: name, color: selectedColor));
-                  });
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(uid)
+                        .collection('projects')
+                        .add({
+                      'projectName': name,
+                      'color': selectedColor.value,
+                      'createdAt': Timestamp.now(),
+                    });
 
-                  _projectController.clear();
-                  Navigator.of(context).pop();
+                    _projectController.clear();
+                    Navigator.of(context).pop();
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Failed to add project: $e")),
+                    );
+                  }
                 },
                 child: const Text('Add'),
               ),
@@ -129,6 +147,8 @@ class _ProjectsState extends State<Projects> {
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 0, 132, 255),
@@ -136,109 +156,154 @@ class _ProjectsState extends State<Projects> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-              icon: const Icon(Icons.logout, color: Colors.black,),
-              onPressed: () {}
-          )
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.redAccent,
+            ),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                (route) => false,
+              );
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddProjectDialog,
         child: const Icon(Icons.add),
       ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .collection('projects')
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-      body: projects.isEmpty
-          ? const Center(child: Text('No projects yet. Tap + to add one.', style: TextStyle(fontSize: 20),))
-          : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: projects.length,
-        itemBuilder: (context, index) {
-          final project = projects[index];
-          final textColor = ThemeData.estimateBrightnessForColor(project.color) == Brightness.dark
-              ? Colors.white
-              : Colors.black;
-
-          return Dismissible(
-            key: Key(project.name + index.toString()),
-            direction: DismissDirection.endToStart,
-            background: Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 20),
-              decoration: BoxDecoration(
-                color: Colors.redAccent,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    offset: Offset(0, 4),
-                    blurRadius: 8,
-                  ),
-                ],
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                'Tap + to add a new project.',
+                style: TextStyle(fontSize: 20),
               ),
-              child: const Icon(Icons.delete, color: Colors.white, size: 30),
-            ),
-            confirmDismiss: (_) async {
-              return await _showConfirmationDialog(context, project.name);
-            },
-            onDismissed: (_) {
-              setState(() {
-                projects.remove(project);
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${project.name} marked as deleted')),
+            );
+          }
+
+          final projects = snapshot.data!.docs;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: projects.length,
+            itemBuilder: (context, index) {
+              final project = projects[index];
+              final projectName = project['projectName'];
+              final projectColor = Color(project['color']);
+              final textColor =
+                  ThemeData.estimateBrightnessForColor(projectColor) ==
+                          Brightness.dark
+                      ? Colors.white
+                      : Colors.black;
+
+              return Dismissible(
+                key: Key(project.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        offset: Offset(0, 4),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child:
+                      const Icon(Icons.delete, color: Colors.white, size: 30),
+                ),
+                confirmDismiss: (_) async {
+                  return await _showConfirmationDialog(context, projectName);
+                },
+                onDismissed: (_) async {
+                  await project.reference.delete();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$projectName has been deleted.')),
+                  );
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  color: projectColor,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: ListTile(
+                    title: Text(
+                      projectName,
+                      style: TextStyle(fontSize: 20, color: textColor),
+                    ),
+                    subtitle: Text(
+                      "ds",
+                      style: TextStyle(color: textColor.withOpacity(0.7)),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+                    onTap: () {
+                      final uid = FirebaseAuth.instance.currentUser!.uid;
+                      final projectId = project.id;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Task(
+                            projectId: projectId,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               );
             },
-            child: project.isDeleted
-                ? SizedBox()
-                : Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              color: project.color,
-              margin: const EdgeInsets.only(bottom: 16),
-              child: ListTile(
-                title: Text(
-                  project.name,
-                  style: TextStyle(fontSize: 20, color: textColor),
-                ),
-                subtitle: Text(
-                  "${project.taskCount} task${project.taskCount == 1 ? '' : 's'}",
-                  style: TextStyle(color: textColor.withOpacity(0.7)),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-                onTap: () {
-                },
-              ),
-            ),
           );
         },
       ),
     );
   }
 
-  Future<bool> _showConfirmationDialog(BuildContext context, String projectName) async {
+  Future<bool> _showConfirmationDialog(
+      BuildContext context, String projectName) async {
     return (await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Are you sure?'),
-          content: Text('Do you want to delete the project "$projectName"?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    )) ?? false;
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Are you sure?'),
+              content:
+                  Text('Do you want to delete the project "$projectName"?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          },
+        )) ??
+        false;
   }
 }

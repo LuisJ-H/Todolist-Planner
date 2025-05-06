@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todolist_app/pages/loadingPage.dart';
 import 'package:todolist_app/pages/projects.dart';
+import 'package:todolist_app/pages/task.dart';
 import 'signup.dart';
+
+final uid = FirebaseAuth.instance.currentUser!.uid;
 
 class LoginScreen extends StatefulWidget {
   static route() => MaterialPageRoute(
         builder: (context) => const LoginScreen(),
       );
   const LoginScreen({super.key});
-
 
   /*TODO
   *
@@ -59,95 +64,102 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 0, 132, 255),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                const SizedBox(height: 60),
-                Text(
-                  'Login',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.emilysCandy().fontFamily,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: emailController,
-                  decoration: _inputDecoration('Email').copyWith(
-                    prefixIcon: const Icon(Icons.email),
-                  ),
-                  validator: (value) => value != null && value.contains('@')
-                      ? null
-                      : 'Enter valid email',
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: _inputDecoration('Password').copyWith(
-                    prefixIcon: const Icon(Icons.lock),
-                  ),
-                  validator: (value) => value != null && value.length >= 6
-                      ? null
-                      : 'Min 6 characters',
-                ),
-                const SizedBox(height: 16),
-                const SizedBox(height: 24),
-                isLoading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: loginUser,
-                        style: _buttonStyle(),
-                        child: const Text('Log In'),
+  Widget build(BuildContext context) => isLoading
+      ? const LoadingPage()
+      : Scaffold(
+          backgroundColor: const Color.fromARGB(255, 0, 132, 255),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    const SizedBox(height: 60),
+                    Text(
+                      'Login',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.emilysCandy().fontFamily,
                       ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignUpScreen(),
+                    ),
+                    const SizedBox(height: 40),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: _inputDecoration('Email').copyWith(
+                        prefixIcon: const Icon(Icons.email),
                       ),
-                    );
-                  },
-                  child: const Text(
-                    'Don’t have an account? Sign Up',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                      validator: (value) => value != null && value.contains('@')
+                          ? null
+                          : 'Enter valid email',
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: _inputDecoration('Password').copyWith(
+                        prefixIcon: const Icon(Icons.lock),
+                      ),
+                      validator: (value) => value != null && value.length >= 6
+                          ? null
+                          : 'Min 6 characters',
+                    ),
+                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        await loginUser();
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
+                      style: _buttonStyle(),
+                      child: const Text('Log In'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignUpScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Don’t have an account? Sign Up',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
-  }
+        );
+}
 
-  InputDecoration _inputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-    );
-  }
+InputDecoration _inputDecoration(String hint) {
+  return InputDecoration(
+    hintText: hint,
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+  );
+}
 
-  ButtonStyle _buttonStyle() {
-    return ElevatedButton.styleFrom(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.blueAccent,
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    );
-  }
+ButtonStyle _buttonStyle() {
+  return ElevatedButton.styleFrom(
+    backgroundColor: Colors.white,
+    foregroundColor: Colors.blueAccent,
+    padding: const EdgeInsets.symmetric(vertical: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  );
 }
