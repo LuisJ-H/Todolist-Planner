@@ -6,6 +6,8 @@ import 'package:todolist_app/pages/login.dart';
 import 'package:todolist_app/pages/projects.dart';
 import 'package:todolist_app/pages/signup.dart';
 import 'package:todolist_app/pages/welcome.dart';
+import 'package:todolist_app/pages/logo.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +26,13 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TodoList App',
-      initialRoute: '/home',
+      initialRoute: '/logo',
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
         '/home': (context) => const WelcomeScreen(),
         '/project': (context) => const Projects(),
+        '/logo' : (context) => Logo(),
       },
     );
   }
