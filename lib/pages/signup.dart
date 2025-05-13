@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
 
@@ -27,7 +28,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-      print("User signed up: ${userCredential.user?.email}");
+
+      String uid = userCredential.user!.uid;
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'email': emailController,
+        'createdAt': Timestamp.now(),
+      });
     } on FirebaseAuthException catch (e) {
       print("Firebase sign up error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -136,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   ButtonStyle _buttonStyle() {
     return ElevatedButton.styleFrom(
       backgroundColor: Colors.white,
-      foregroundColor: Colors.blueAccent, //Button colors
+      foregroundColor: Colors.blueAccent,
       padding: const EdgeInsets.symmetric(vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );

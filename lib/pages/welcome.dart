@@ -26,7 +26,7 @@ class WelcomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Beautiful, Private Sharing',
+              'The Perfect way to organize',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white70,
